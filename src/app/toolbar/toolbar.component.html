@@ -1,0 +1,19 @@
+<div class="main">
+    <div class="dificulty">
+        <span>Select difficulty:</span>
+        <div class="dificulty-buttons">
+            <button class="dificulty-button" (click)="setDifficulty('easy')">Easy</button>
+            <button class="dificulty-button" (click)="setDifficulty('medium')">Medium</button>
+            <button class="dificulty-button" (click)="setDifficulty('hard')">Hard</button>
+            <button class="dificulty-button" (click)="setDifficulty('custom')">Custom</button>
+
+            <div class="custom-difficulty" *ngIf="difficulty === 'custom'">
+                <span>Custom difficulty:</span>
+                <input type="number" min="1" max="100" [(ngModel)]="customDifficultyLines">
+                <input type="number" min="1" max="100" [(ngModel)]="customDifficultyColumns">
+                <input type="number" [(ngModel)]="customDifficultyBombs">
+                <button (click)="setDifficultyCustom()">Set</button>
+            </div>
+        </div>
+    </div>
+</div>
