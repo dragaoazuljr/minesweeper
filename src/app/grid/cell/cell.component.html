@@ -1,5 +1,5 @@
-<div class="main" (click)="cellClick.emit()">
+<div class="main" (click)="cellClick.emit('Click')" (contextmenu)="emitFlag($event)">
     <span *ngIf="show">
-        {{cell}}
+        {{getCellValue(cell)}}
     </span>
 </div>

@@ -2,7 +2,7 @@
 <div class="main">
     <div class="lines" *ngFor="let line of grid; index as i">
         <div class="column" *ngFor="let column of grid[i]; index as j">
-            <app-cell [show]="clickedCells[i][j]" [cell]="grid[i][j]" (cellClick)="cellClicked(i,j)"></app-cell>
+            <app-cell [show]="clickedCells[i][j]" [cell]="grid[i][j]" (cellClick)="cellClicked(i,j, $event)"></app-cell>
         </div>
     </div>
 </div>

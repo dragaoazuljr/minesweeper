@@ -84,7 +84,7 @@ export class GridComponent implements OnInit {
     this.grid[firstPosition[0]][firstPosition[1]] = BombOrFlag["00"];
 
     this.setBombs(firstPosition);
-    this.setFlagOrEmpty();
+    this.setNumberOfBombsOrEmpty();
 
     this.start = true;
   }
@@ -103,7 +103,7 @@ export class GridComponent implements OnInit {
     }
   }
 
-  setFlagOrEmpty() {
+  setNumberOfBombsOrEmpty() {
     for (let i = 0; i < this.difficulty.lines; i++) {
       for (let j = 0; j < this.difficulty.columns; j++) {
         if (this.grid[i][j] !== BombOrFlag.Bomb) {
@@ -131,10 +131,16 @@ export class GridComponent implements OnInit {
     return BombOrFlag[flagType];
   }
 
-  cellClicked(line: number, column: number) {
+  cellClicked(line: number, column: number, event: 'Flag' | 'Click') {
     if (this.firstClick) {
       this.firstClick = false;
       this.firstClick$.next([line, column]);
+    }
+    
+    if(event === 'Flag') {
+      this.placeFlag(line, column);
+      this.checkWin();
+      return ;
     }
 
     this.clickedCells[line][column] = true;
@@ -146,6 +152,28 @@ export class GridComponent implements OnInit {
     if (this.grid[line][column] === BombOrFlag["00"]) {
       this.clickEmptyCells(line, column);
     }
+
+    this.checkWin();
+  }
+
+  checkWin() {
+    const flaggedBombs = this.grid.reduce((acc, line) => {
+      return acc + line.filter(cell => cell === BombOrFlag.Flag).length;
+    }, 0);
+
+    if (flaggedBombs === this.difficulty.bombs) {
+      this.gameOver();
+    }
+  }
+
+  placeFlag(line: number, column: number) {
+    if (this.grid[line][column] === BombOrFlag.Bomb) {
+      this.grid[line][column] = BombOrFlag.BombWithFlag;
+    } else {
+      this.grid[line][column] = BombOrFlag.Flag;
+    }
+
+    this.clickedCells[line][column] = true;
   }
 
   clickEmptyCells(line: number, column: number) {

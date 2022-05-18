@@ -11,11 +11,28 @@ export class CellComponent implements OnInit {
   @Input() cell!: BombOrFlag;
   @Input() show: boolean = false;
 
-  @Output() cellClick= new EventEmitter<void>();
+  @Output() cellClick= new EventEmitter<'Flag' | 'Click'>();
 
   constructor() { }
 
   ngOnInit(): void {
   }
 
+  emitFlag(event: Event) {
+    event.preventDefault();
+    this.cellClick.emit('Flag');
+  }
+
+  getCellValue(bombOfFlag: BombOrFlag) {
+    switch (bombOfFlag) {
+      case BombOrFlag.Flag:
+        return '🚩';
+      case BombOrFlag.Bomb:
+        return '💣';
+      case BombOrFlag.BombWithFlag:
+        return '🚩';
+      default:
+        return bombOfFlag;
+      }
+    }
 }

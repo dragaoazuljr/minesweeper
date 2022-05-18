@@ -1,5 +1,7 @@
 export enum BombOrFlag {
+    Flag = "Flag",
     Bomb = "bomb",
+    BombWithFlag = "bombWithFlag",
     "00" = "empty",
     "01" = "1",
     "02" = "2",
