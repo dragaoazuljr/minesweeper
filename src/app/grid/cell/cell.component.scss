@@ -1,8 +1,64 @@
 .main {
     border: 1px solid #ccc;
     border-radius: 3px;
-    background-color: #fafafa;
+    background-color: #F0E4DA;
     min-height: 50px;
     min-width: 50px;
     cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    span{
+        font-size: 1.5em;
+        font-weight: bold;
+    }
+    
+    &.a {
+        background-color: #CFC1B5;
+    }
+
+    &.a1 {
+        background-color: #E4D5C3;
+    }
+
+    &.a2 {
+        background-color: #F0B379;
+        color: white;
+    }
+
+    &.a3 {
+        background-color: #F79664;
+        color: white;
+    }
+
+    &.a4 {
+        background-color: #F67C5F;
+        color: white;
+    }
+
+    &.a5 {
+        background-color: #F75C3E;
+        color: white;
+    }
+
+    &.a6 {
+        background-color: #EDCF73;
+        color: white;
+    }
+
+    &.a7 {
+        background-color: #EDCC62;
+        color: white;
+    }
+
+    &.a8 {
+        background-color: #EDC850;
+        color: white;
+    }
+
+    &.flag {
+        background-color: #E4D5C3;
+    }
+
 }

@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { fromEvent, Subject, take } from 'rxjs';
-import { BombOrFlag } from '../enums/BombOrFlag';
+import { BombOrEmpty, BombOrFlag } from '../enums/BombOrFlag';
 import { GridService } from './grid.service';
 
 @Component({
@@ -63,7 +63,10 @@ export class GridComponent implements OnInit {
       this.grid[i] = [];
       this.clickedCells[i] = [];
       for (let j = 0; j < this.difficulty.columns; j++) {
-        this.grid[i][j] = BombOrFlag["00"];
+        this.grid[i][j]= {
+          bombOrEmpty: BombOrEmpty["00"],
+          flagged: false
+        }
         this.clickedCells[i][j] = false;
       }
     }
@@ -81,7 +84,7 @@ export class GridComponent implements OnInit {
   }
 
   fillGrid(firstPosition: number[]) {
-    this.grid[firstPosition[0]][firstPosition[1]] = BombOrFlag["00"];
+    this.grid[firstPosition[0]][firstPosition[1]].bombOrEmpty = BombOrEmpty["00"];
 
     this.setBombs(firstPosition);
     this.setNumberOfBombsOrEmpty();
@@ -96,8 +99,8 @@ export class GridComponent implements OnInit {
       let randomLine = Math.floor(Math.random() * this.difficulty.lines);
       let randomColumn = Math.floor(Math.random() * this.difficulty.columns);
 
-      if (randomLine !== firstPosition[0] && randomColumn !== firstPosition[1] && this.grid[randomLine][randomColumn] !== BombOrFlag.Bomb) {
-        this.grid[randomLine][randomColumn] = BombOrFlag.Bomb;
+      if (randomLine !== firstPosition[0] && randomColumn !== firstPosition[1] && this.grid[randomLine][randomColumn].bombOrEmpty !== BombOrEmpty.Bomb) {
+        this.grid[randomLine][randomColumn].bombOrEmpty = BombOrEmpty.Bomb;
         bombs--;
       }
     }
@@ -106,35 +109,39 @@ export class GridComponent implements OnInit {
   setNumberOfBombsOrEmpty() {
     for (let i = 0; i < this.difficulty.lines; i++) {
       for (let j = 0; j < this.difficulty.columns; j++) {
-        if (this.grid[i][j] !== BombOrFlag.Bomb) {
-          this.grid[i][j] = this.getNumberOfBombsAround(i, j);
+        if (this.grid[i][j].bombOrEmpty !== BombOrEmpty.Bomb) {
+          this.grid[i][j].bombOrEmpty = this.getNumberOfBombsAround(i, j);
         }
       }
     }
   }
 
-  getNumberOfBombsAround(line: number, column: number): BombOrFlag {
+  getNumberOfBombsAround(line: number, column: number): BombOrEmpty {
     let numberOfBombs = 0;
 
     for (let i = line - 1; i <= line + 1; i++) {
       for (let j = column - 1; j <= column + 1; j++) {
         if (i >= 0 && i < this.difficulty.lines && j >= 0 && j < this.difficulty.columns) {
-          if (this.grid[i][j] === BombOrFlag.Bomb) {
+          if (this.grid[i][j].bombOrEmpty === BombOrEmpty.Bomb) {
             numberOfBombs++;
           }
         }
       }
     }
 
-    const flagType = "0"+numberOfBombs as keyof typeof BombOrFlag;
+    const flagType = "0"+numberOfBombs as keyof typeof BombOrEmpty;
 
-    return BombOrFlag[flagType];
+    return BombOrEmpty[flagType];
   }
 
   cellClicked(line: number, column: number, event: 'Flag' | 'Click') {
     if (this.firstClick) {
       this.firstClick = false;
       this.firstClick$.next([line, column]);
+    }
+
+    if(!this.start) {
+      return;
     }
     
     if(event === 'Flag') {
@@ -145,11 +152,11 @@ export class GridComponent implements OnInit {
 
     this.clickedCells[line][column] = true;
 
-    if (this.grid[line][column] === BombOrFlag.Bomb) {
+    if (this.grid[line][column].bombOrEmpty === BombOrEmpty.Bomb) {
       this.gameOver();
     }
 
-    if (this.grid[line][column] === BombOrFlag["00"]) {
+    if (this.grid[line][column].bombOrEmpty === BombOrEmpty["00"]) {
       this.clickEmptyCells(line, column);
     }
 
@@ -158,7 +165,7 @@ export class GridComponent implements OnInit {
 
   checkWin() {
     const flaggedBombs = this.grid.reduce((acc, line) => {
-      return acc + line.filter(cell => cell === BombOrFlag.Flag).length;
+      return acc + line.filter(cell => cell.bombOrEmpty === BombOrEmpty.Bomb &&  cell.flagged).length;
     }, 0);
 
     if (flaggedBombs === this.difficulty.bombs) {
@@ -167,13 +174,8 @@ export class GridComponent implements OnInit {
   }
 
   placeFlag(line: number, column: number) {
-    if (this.grid[line][column] === BombOrFlag.Bomb) {
-      this.grid[line][column] = BombOrFlag.BombWithFlag;
-    } else {
-      this.grid[line][column] = BombOrFlag.Flag;
-    }
-
-    this.clickedCells[line][column] = true;
+    this.grid[line][column].flagged = !this.grid[line][column].flagged;
+    this.clickedCells[line][column] = !this.clickedCells[line][column];
   }
 
   clickEmptyCells(line: number, column: number) {
@@ -186,10 +188,10 @@ export class GridComponent implements OnInit {
     for (let i = line - 1; i <= line + 1; i++) {
       for (let j = column - 1; j <= column + 1; j++) {
         if (i >= 0 && i < this.difficulty.lines && j >= 0 && j < this.difficulty.columns) {
-          if (this.grid[i][j] !== BombOrFlag.Bomb && !this.clickedCells[i][j]) {
+          if (this.grid[i][j].bombOrEmpty !== BombOrEmpty.Bomb && !this.clickedCells[i][j]) {
             emptyCellsAround.push([i, j]);
             this.clickedCells[i][j] = true;
-            if(this.grid[i][j] === BombOrFlag["00"]) {
+            if(this.grid[i][j].bombOrEmpty === BombOrEmpty["00"]) {
               this.clickEmptyCells(i, j);
             }
           }

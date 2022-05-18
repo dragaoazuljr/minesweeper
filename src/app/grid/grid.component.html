@@ -1,8 +1,11 @@
 <!-- create a grid with using difficulty.lines and difficulty.columns -->
 <div class="main">
-    <div class="lines" *ngFor="let line of grid; index as i">
-        <div class="column" *ngFor="let column of grid[i]; index as j">
-            <app-cell [show]="clickedCells[i][j]" [cell]="grid[i][j]" (cellClick)="cellClicked(i,j, $event)"></app-cell>
+    <button (click)="gameOver()">Arregar?</button>
+    <div class="grid">
+        <div class="lines" *ngFor="let line of grid; index as i">
+            <div class="column" *ngFor="let column of grid[i]; index as j">
+                <app-cell [show]="clickedCells[i][j]" [start]="start" [cell]="grid[i][j]" (cellClick)="cellClicked(i,j, $event)"></app-cell>
+            </div>
         </div>
     </div>
 </div>

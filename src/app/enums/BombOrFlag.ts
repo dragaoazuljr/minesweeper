@@ -1,8 +1,6 @@
-export enum BombOrFlag {
-    Flag = "Flag",
+export enum BombOrEmpty {
     Bomb = "bomb",
-    BombWithFlag = "bombWithFlag",
-    "00" = "empty",
+    "00" = "",
     "01" = "1",
     "02" = "2",
     "03" = "3",
@@ -11,4 +9,9 @@ export enum BombOrFlag {
     "06" = "6",
     "07" = "7",
     "08" = "8",
+}
+
+export interface BombOrFlag {
+    bombOrEmpty: BombOrEmpty;
+    flagged: boolean;
 }

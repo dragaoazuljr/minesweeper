@@ -1,5 +1,5 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
-import { BombOrFlag } from 'src/app/enums/BombOrFlag';
+import { BombOrEmpty, BombOrFlag } from 'src/app/enums/BombOrFlag';
 
 @Component({
   selector: 'app-cell',
@@ -10,6 +10,7 @@ export class CellComponent implements OnInit {
 
   @Input() cell!: BombOrFlag;
   @Input() show: boolean = false;
+  @Input() start: boolean = false;
 
   @Output() cellClick= new EventEmitter<'Flag' | 'Click'>();
 
@@ -19,20 +20,30 @@ export class CellComponent implements OnInit {
   }
 
   emitFlag(event: Event) {
-    event.preventDefault();
+    if(this.start){
+      event.preventDefault();
+    }
+
     this.cellClick.emit('Flag');
   }
 
   getCellValue(bombOfFlag: BombOrFlag) {
-    switch (bombOfFlag) {
-      case BombOrFlag.Flag:
-        return '🚩';
-      case BombOrFlag.Bomb:
-        return '💣';
-      case BombOrFlag.BombWithFlag:
-        return '🚩';
-      default:
-        return bombOfFlag;
+    const cellValue = bombOfFlag.bombOrEmpty;
+
+    if(!this.start) {
+      if(bombOfFlag.flagged && cellValue === BombOrEmpty.Bomb) {
+        return '🚩💣';
       }
     }
+
+    if(bombOfFlag.flagged) {
+      return '🚩';
+    }
+
+    if (cellValue === BombOrEmpty.Bomb) {
+      return '💣';
+    }
+      
+    return bombOfFlag.bombOrEmpty;
+  }
 }

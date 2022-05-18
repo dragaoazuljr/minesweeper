@@ -1,4 +1,4 @@
-<div class="main" (click)="cellClick.emit('Click')" (contextmenu)="emitFlag($event)">
+<div (click)="cellClick.emit('Click')" (contextmenu)="emitFlag($event)" [ngClass]="['main', show ? 'a'+cell.bombOrEmpty : 'unclicked']">
     <span *ngIf="show">
         {{getCellValue(cell)}}
     </span>
