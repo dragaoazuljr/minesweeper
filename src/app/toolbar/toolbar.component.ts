@@ -25,6 +25,11 @@ export class ToolbarComponent implements OnInit {
   }
 
   setDifficultyCustom() {
+    if((this.customDifficultyLines * this.customDifficultyColumns) / 2 <= this.customDifficultyBombs) {
+      alert("The number of bombs must be less than the number of (lines * columns) / 2");
+      return;
+    }
+
     this.difficulty = "custom";
     this.difficultyChange.emit({difficulty: "custom", lines: this.customDifficultyLines, columns: this.customDifficultyColumns, bombs: this.customDifficultyBombs});
   }

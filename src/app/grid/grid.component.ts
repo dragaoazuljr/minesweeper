@@ -95,6 +95,12 @@ export class GridComponent implements OnInit {
   setBombs(firstPosition: number[]) {
     let bombs = this.difficulty.bombs;
 
+    const placedBombs = this.grid.reduce((acc, line) => acc + line.filter(cell => cell.bombOrEmpty === BombOrEmpty.Bomb).length, 0);
+
+    if (placedBombs >= this.difficulty.bombs) {
+      return;
+    }
+
     while (bombs > 0) {
       let randomLine = Math.floor(Math.random() * this.difficulty.lines);
       let randomColumn = Math.floor(Math.random() * this.difficulty.columns);
